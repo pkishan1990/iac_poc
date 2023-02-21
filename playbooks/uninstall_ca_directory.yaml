@@ -3,9 +3,10 @@
   gather_facts: false
   hosts: directory_servers
   tasks:
-    - name: Check dsa user. If dsa user exists, then directory is already installed
+    - name: Check for dsa user.
       command: id dsa
       register: iddsa
     - name: uninstall CA Directory
-      shell: /disk/apps/directory/dxserver/uninstall/dxuninst.sh
-      when: iddsa['rc'] == 0
+      become_method: su
+      shell: /disk/apps/directory/dxserver/uninstall/dxuninst.sh -silent
+      when: iddsa['rc'] == 0 ## dsa user exists i.e. directory is installed
