@@ -1,0 +1,11 @@
+---
+- name: Uninstall CA Directory
+  gather_facts: false
+  hosts: directory_servers
+  tasks:
+    - name: Check dsa user. If dsa user exists, then directory is already installed
+      command: id dsa
+      register: iddsa
+    - name: uninstall CA Directory
+      shell: /disk/apps/directory/dxserver/uninstall/dxuninst.sh
+      when: iddsa['rc'] == 0

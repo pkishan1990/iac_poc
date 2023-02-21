@@ -1,0 +1,12 @@
+---
+- name: Install CA Directory
+  hosts: directory_servers
+  tasks:
+    - name: Check dsa user
+      command: id dsa
+      register: iddsa
+    - name:
+      copy:
+        src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
+        dest: /tmp
+      when: iddsa['rc'] != 0
