@@ -1,18 +1,27 @@
 ---
 - name: Install CA Directory
   hosts: directory_servers
+  gather_facts: no
   tasks:
     - name: Check dsa user
       command: "grep dsa /etc/passwd"
       register: iddsa
       ignore_errors: true
-    - name: Task name 1
-      debug:
-        msg: "User do not exist"
+    - name: Installation
+      block:
+        - name: Create directory
+          file:
+            path: /tmp/ca_directory
+            state: directory
+        - name: Unarchive .tar.gz file
+          unarchive:
+            src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
+            dest: /tmp/ca_directory
+        - name: Upload response file
+          copy:
+            src: ../files/response_file
+            dest: /tmp/ca_directory/response_file
+        - name: Install CA Directory
+          command: chdir=/tmp/ca_directory/dxserver/install/ ./dxsetup.sh -silent -responsefile /tmp/ca_directory/response_file
       when: iddsa['rc'] != 0
-    # - name:
-    #   unarchive:
-    #     src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
-    #     dest: /tmp
-    #   when: iddsa['rc'] != 0
-
+      
