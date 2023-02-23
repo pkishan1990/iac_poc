@@ -3,6 +3,7 @@
   vars_files: 
     - ~/secret.yml
   hosts: localhost
+  gather_facts: false
   become: false
   tasks:
     - name: Copy response file
@@ -50,6 +51,7 @@
 
 - name: Remove response_file from home directory
   hosts: localhost
+  gather_facts: false
   become: false
   tasks:
     - name: Remove response_file
