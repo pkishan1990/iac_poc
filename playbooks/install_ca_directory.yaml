@@ -1,4 +1,25 @@
 ---
+- name: Create a local copy of response file with real secret
+  vars_files: 
+    - ~/secret.yml
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Copy response file
+      copy: 
+        src: ../files/response_file
+        dest: ~/
+    - name: Replace with secrets DXMASTERKEYPASS
+      replace:
+        path: ~/response_file
+        regexp: 'REPLACEME1$'
+        replace: '{{ DXMASTERKEYPASS }}'
+    - name: Replace with secrets DXAGENTPASS
+      replace:
+        path: ~/response_file
+        regexp: 'REPLACEME2$'
+        replace: '{{ DXAGENTPASS }}'
+        
 - name: Install CA Directory
   hosts: directory_servers
   gather_facts: no
@@ -19,7 +40,7 @@
             dest: /home/ansible/ca_directory
         - name: Upload response file
           copy:
-            src: ../files/response_file
+            src: ~/response_file
             dest: /home/ansible/ca_directory/response_file
         - name: Install CA Directory
           command: chdir=/home/ansible/ca_directory/dxserver/install/ ./dxsetup.sh -silent -responsefile /home/ansible/ca_directory/response_file
