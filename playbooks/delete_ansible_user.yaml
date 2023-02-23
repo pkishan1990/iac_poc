@@ -1,0 +1,15 @@
+- name: Delete ansible user
+  hosts: directory_servers
+  gather_facts: no
+  remote_user: iacpocadmin
+  vars:
+     ansible_ssh_private_key_file: ~/iacpocadmin_key/id_rsa.pem
+  tasks:
+    - name: Delete user
+      user: 
+        name: ansible
+        state: absent
+    - name: Delete sudoers file
+      file:
+        path: /etc/sudoers.d/ansible
+        state: absent

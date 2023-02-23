@@ -1,0 +1,38 @@
+- name: Create ansible user
+  hosts: directory_servers
+  gather_facts: no
+  remote_user: iacpocadmin
+  vars:
+     ansible_ssh_private_key_file: ~/iacpocadmin_key/id_rsa.pem
+  tasks:
+    - name: Create user
+      user:
+        name: ansible
+        create_home: yes
+        group: adm
+        uid: 1041
+
+- name: Create SSH key
+  hosts: localhost
+  gather_facts: no
+  become: false
+  tasks:
+    - name: Remove existing private key file
+      file:
+        path: ~/.ssh/id_rsa
+        state: absent
+    - name: Create SSH key
+      command: ssh-keygen -f ~/.ssh/id_rsa -N \"\"
+
+- name: Copy public key to directory_servers
+  hosts: directory_servers
+  gather_facts: no
+  remote_user: iacpocadmin
+  vars:
+     ansible_ssh_private_key_file: ~/iacpocadmin_key/id_rsa.pem
+  tasks:
+    # - name: Create SSH key and copy over to remote machine
+    # TODO figure out how to get rid of the password prompt
+    - name: Loop through all directory_servers and copy ssh public key 
+      command: ssh-copy-id ansible@{{ item }}
+      loop: "{{ ansible_play_hosts }}"
