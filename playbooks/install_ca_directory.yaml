@@ -11,18 +11,18 @@
       block:
         - name: Create directory
           file:
-            path: /tmp/ca_directory
+            path: /home/ansible/ca_directory
             state: directory
         - name: Unarchive .tar.gz file
           unarchive:
             src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
-            dest: /tmp/ca_directory
+            dest: /home/ansible/ca_directory
         - name: Upload response file
           copy:
             src: ../files/response_file
-            dest: /tmp/ca_directory/response_file
+            dest: /home/ansible/ca_directory/response_file
         - name: Install CA Directory
-          command: chdir=/tmp/ca_directory/dxserver/install/ ./dxsetup.sh -silent -responsefile /tmp/ca_directory/response_file
+          command: chdir=/home/ansible/ca_directory/dxserver/install/ ./dxsetup.sh -silent -responsefile /home/ansible/ca_directory/response_file
         - name: Check dsa user
           command: "id dsa"
       when: iddsa['rc'] != 0
