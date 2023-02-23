@@ -2,11 +2,15 @@
 - name: Uninstall CA Directory
   gather_facts: false
   hosts: directory_servers
+  force_handlers: yes
   tasks:
     - name: Check for dsa user.
       command: id dsa
       register: iddsa
-    - name: uninstall CA Directory
-      become_method: su
+      notify:
+        - uninstall_ca_directory
+  handlers:
+    - name: uninstall_ca_directory
+      # become_method: su
       shell: /disk/apps/directory/dxserver/uninstall/dxuninst.sh -silent
-      when: iddsa['rc'] == 0 ## dsa user exists i.e. directory is installed
+      when: iddsa['rc'] != 0 ## dsa user exists i.e. directory is installed

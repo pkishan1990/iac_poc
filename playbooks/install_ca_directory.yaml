@@ -3,10 +3,16 @@
   hosts: directory_servers
   tasks:
     - name: Check dsa user
-      command: id dsa
+      command: "grep dsa /etc/passwd"
       register: iddsa
-    - name:
-      copy:
-        src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
-        dest: /tmp
+      ignore_errors: true
+    - name: Task name 1
+      debug:
+        msg: "User do not exist"
       when: iddsa['rc'] != 0
+    # - name:
+    #   unarchive:
+    #     src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
+    #     dest: /tmp
+    #   when: iddsa['rc'] != 0
+
