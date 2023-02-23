@@ -47,6 +47,13 @@
         - name: Check dsa user
           command: "id dsa"
       when: iddsa['rc'] != 0
-      
 
+- name: Remove response_file from home directory
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Remove response_file
+      file: 
+        path: ~/response_file
+        state: absent
       
