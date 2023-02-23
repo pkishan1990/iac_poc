@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
     - name: Check dsa user
-      command: "grep dsa /etc/passwd"
+      command: "id dsa"
       register: iddsa
       ignore_errors: true
     - name: Installation
@@ -23,5 +23,9 @@
             dest: /tmp/ca_directory/response_file
         - name: Install CA Directory
           command: chdir=/tmp/ca_directory/dxserver/install/ ./dxsetup.sh -silent -responsefile /tmp/ca_directory/response_file
+        - name: Check dsa user
+          command: "id dsa"
       when: iddsa['rc'] != 0
+      
+
       
