@@ -31,8 +31,8 @@
   vars:
      ansible_ssh_private_key_file: ~/iacpocadmin_key/id_rsa.pem
   tasks:
-    # - name: Create SSH key and copy over to remote machine
-    # TODO figure out how to get rid of the password prompt
-    - name: Loop through all directory_servers and copy ssh public key 
-      command: ssh-copy-id ansible@{{ item }}
-      loop: "{{ ansible_play_hosts }}"
+    - name: copy over SSH public key to remote machine
+      ansible.posix.authorized_key:
+        user: ansible
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
