@@ -9,6 +9,7 @@
       user: 
         name: ansible
         state: absent
+        remove: yes
     - name: Delete sudoers file
       file:
         path: /etc/sudoers.d/ansible
