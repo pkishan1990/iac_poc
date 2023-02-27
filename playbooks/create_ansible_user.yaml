@@ -22,8 +22,9 @@
         path: ~/.ssh/id_rsa
         state: absent
     - name: Create SSH key
-      command: ssh-keygen -f ~/.ssh/id_rsa -N \"\"
-
+    # Generate SSH key without passphrase
+      command: ssh-keygen -f ~/.ssh/id_rsa -N ''
+      
 - name: Copy public key to directory_servers
   hosts: directory_servers
   gather_facts: no
