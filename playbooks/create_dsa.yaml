@@ -1,16 +1,28 @@
 - name: Create Data Store
   hosts: directory_servers
   gather_facts: no
+  become_user: dsa
+  become_flags: "-i"
   tasks:
     - name: Check if Data Store exists
-      become_user: dsa
-      become_flags: "-i"
       shell: "dxserver status | grep crausers"
       register: datastore
       ignore_errors: true
-    - name: Create Data Store
-      become_user: dsa
-      # Loading environment variables set: become_flags
-      become_flags: "-i"
-      shell: "chdir=/disk/apps/directory/dxserver/bin ./dxnewdsa crausers 389 \"ou=People,o=cra\""
+    - name: Create and start Data Store
+      block:
+      - name: Create Data Store
+        shell: "chdir=/disk/apps/directory/dxserver/bin ./dxnewdsa crausers 4000 \"ou=People,o=cra\""
+      - name: Start Data Store
+        shell: dxserver start crausers
       when: datastore['rc'] != 0
+
+- name: Add Firewall rules to allow ldap port
+  hosts: directory_servers
+  gather_facts: no
+  tasks:
+  - name: Add Firewall rules to accept connection
+    firewalld:
+      permanent: yes
+      immediate: yes
+      port: 4000/tcp
+      state: enabled   
