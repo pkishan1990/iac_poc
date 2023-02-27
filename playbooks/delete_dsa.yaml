@@ -1,0 +1,21 @@
+- name: Delete Data Store
+  hosts: directory_servers
+  gather_facts: no
+  become_user: dsa
+  become_flags: "-i"
+  tasks:
+    - name: Delete Data Store crausers
+      shell: "dxserver stop crausers"
+    - name: Delete dxi file
+      file:
+        path: "$DXHOME/config/servers/crausers.dxi"
+        state: absent
+    - name: Delete dxc file
+      file:
+        path: "$DXHOME/config/knowledge/crausers.dxc"
+        state: absent
+    - name: Delete db file
+      file:
+        path: "$DXHOME/data/crausers.db"
+        state: absent
+     
