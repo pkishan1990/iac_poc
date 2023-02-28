@@ -1,0 +1,5 @@
+dn: cn=adam,ou=People,o=cra
+changetype: add
+uid: adam
+description: adam user
+objectClass: account

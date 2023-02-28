@@ -20,7 +20,7 @@
         description: An LDAP administrator
         cn: admin
         sn: admin
-        userPassword: '{{ LDAP_ADMIN_PASSWORD }}'
+        userPassword: '{{ LDAP_ADMIN_PASSWORD_HASH }}'
       server_uri: ldap://iacpocvm:4000/
       bind_dn: ""
       bind_pw: ""
