@@ -1,0 +1,26 @@
+- name: Create ldap entry
+  hosts: directory_servers
+  vars_files: 
+  - ~/secret.yml
+  gather_facts: no
+  tasks:
+  # - name: LDAP Auth
+  #   ldap_auth:
+  #     server_uri: ldap://iacpocvm/
+  #     #bind_dn: cn=admin,dc=example,dc=com
+  #     #bind_pw: password
+  - name: Make sure we have an admin user
+    ldap_entry:
+      dn: cn=admin,ou=People,o=cra
+      objectClass:
+        - inetOrgPerson
+        - person
+        - organizationalPerson
+      attributes:
+        description: An LDAP administrator
+        cn: admin
+        sn: admin
+        userPassword: '{{ LDAP_ADMIN_PASSWORD }}'
+      server_uri: ldap://iacpocvm:4000/
+      bind_dn: ""
+      bind_pw: ""
