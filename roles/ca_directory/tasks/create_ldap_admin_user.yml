@@ -1,0 +1,27 @@
+- name: Copy and replace password placeholder in admin.ldif
+  hosts: localhost
+  become: false
+  vars_files:
+    - ~/secret.yml
+  gather_facts: false
+  tasks:
+    - name: make a copy of admin.ldif file
+      copy:
+        src: ../files/admin.ldif
+        dest: ~/
+    - name: Replace with secrets LDAP_ADMIN_PASSWORD_HASH
+      replace:
+        path: ~/admin.ldif
+        regexp: 'LDAP_ADMIN_PASSWORD_HASH_REPLACE_ME'
+        replace: '{{ LDAP_ADMIN_PASSWORD_HASH }}'
+    - name: Make sure we have an admin user
+      command: "ldapadd -H ldap://{{ item }}:4000 -x -f ~/admin.ldif"
+      with_items: "{{ groups['directory_servers'] }}"
+      register: admin_user_result
+      ignore_errors: true
+      changed_when: true
+    - name: Fail if return code is not 0 or 68 (user already exists)
+      fail:
+        msg: Failed to create admin user
+      when: item['rc'] != 0 and item['rc'] != 68
+      loop: "{{ admin_user_result.results }}"

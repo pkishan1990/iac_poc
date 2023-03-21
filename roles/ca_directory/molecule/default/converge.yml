@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include iacpoc.ca_directory"
+      include_role:
+        name: "iacpoc.ca_directory"
