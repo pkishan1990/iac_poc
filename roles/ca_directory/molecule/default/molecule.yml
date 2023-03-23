@@ -15,9 +15,12 @@ platforms:
     privileged: true
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      vault_password_file: ~/vault_password.txt
 verifier:
   name: ansible
 lint: |
   set -e
-  find . -name "*.yml" -exec yamllint {} \;
-  find . -name "*.yml" -exec ansible-lint {} \;
+  find . -name "*.yml" ! -name vault.yml -exec yamllint {} \;
+  find . -name "*.yml" ! -name vault.yml -exec ansible-lint {} \;

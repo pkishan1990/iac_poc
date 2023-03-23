@@ -1,0 +1,31 @@
+---
+- name: Create user
+  ansible.builtin.user:
+    name: ansible
+    create_home: true
+    group: adm
+
+- name: Check for SSH private key
+  ansible.builtin.stat:
+    path: ~/.ssh/ansible_id_rsa
+  delegate_to: localhost
+  register: key_file_stat
+- name: Create SSH key pair
+  ## Generate SSH key without passphrase
+  ansible.builtin.command: ssh-keygen -f ~/.ssh/ansible_id_rsa -N ''
+  when: not key_file_stat.stat.exists
+  changed_when: key_file_stat.stat.exists
+  delegate_to: localhost
+
+- name: Copy over SSH public key to remote machine
+  ansible.posix.authorized_key:
+    user: ansible
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+- name: Add sudoers permission
+  ansible.builtin.copy:
+    content: "ansible ALL=(ALL) NOPASSWD: ALL"
+    dest: /etc/sudoers.d/ansible
+    owner: root
+    group: root
+    mode: '600'

@@ -1,2 +1,3 @@
 ---
 # defaults file for ca_directory
+ansible_ssh_private_key_file: ~/iacpocadmin_key/id_rsa.pem

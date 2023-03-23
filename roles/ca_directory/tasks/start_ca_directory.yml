@@ -1,8 +1,4 @@
-- name: Start CA Directory
-  hosts: directory_servers
-  gather_facts: false
-  tasks:
-    - name: Start dxserver service
-      service:
-        name: dxserver
-        state: started
+- name: Start dxserver service
+  ansible.builtin.service:
+    name: dxserver
+    state: started

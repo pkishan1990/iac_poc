@@ -1,8 +1,16 @@
 ---
 # tasks file for ca_directory
-- ansible.builtin.import_tasks: install_ca_directory.yml
-- ansible.builtin.import_tasks: start_ca_directory.yml
-- ansible.builtin.import_tasks: create_dsa.yml
-- ansible.builtin.import_tasks: start_dsa.yml
-- ansible.builtin.import_tasks: create_ldap_admin_user.yml
-- ansible.builtin.import_tasks: load_users.yml
+- name: Create ansible user
+  ansible.builtin.import_tasks: create_ansible_user.yml
+- name: Install CA Directory
+  ansible.builtin.import_tasks: install_ca_directory.yml
+- name: Start CA Directory
+  ansible.builtin.import_tasks: start_ca_directory.yml
+- name: Create DSA data store
+  ansible.builtin.import_tasks: create_dsa.yml
+- name: Start DSA
+  ansible.builtin.import_tasks: start_dsa.yml
+- name: Create admin user
+  ansible.builtin.import_tasks: create_ldap_admin_user.yml
+- name: Load users
+  ansible.builtin.import_tasks: load_users.yml

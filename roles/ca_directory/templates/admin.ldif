@@ -1,0 +1,10 @@
+dn: cn=admin,ou=People,o=cra
+changetype: add
+uid: adm
+sn: admin
+cn: admin
+userPassword: LDAP_ADMIN_PASSWORD_HASH_REPLACE_ME
+description: admin user
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person

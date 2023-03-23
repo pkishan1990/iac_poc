@@ -1,0 +1,36 @@
+# ==============================
+#   CA Directory Response File
+# ==============================
+# 14.1.00 build 15741
+# Wed Feb  8 14:16:14 EST 2023
+
+# User parameters
+INSTUSER=root
+DXUSER=dsa
+DXSHELL=/bin/bash
+DXUID=
+DXGROUP=dsa
+DXGID=
+
+# Install parameters
+INSTALLDX=y
+INSTALLDOC=
+INSTALLDXAGENT=y
+SETUID=n
+LEGACY_SETUID=
+DXMASTERKEYPASS=REPLACEME1
+
+# Location parameters
+ETDIRHOME=/disk/apps/dxserver
+DXHOME=/disk/apps/directory/dxserver
+CAPKILOC=
+
+# DXagent parameters
+DXAGENTCLIENT=dxaclient
+DXAGENTPORT=9443
+DXAGENTPASS=REPLACEME2
+
+# Upgrade parameters
+BACKUPBIN=
+BACKUPLOC=
+RESTARTDSAS=

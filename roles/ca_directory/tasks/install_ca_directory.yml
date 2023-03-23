@@ -1,60 +1,77 @@
 ---
-- name: Create a local copy of response file with real secret
-  vars_files:
-    - ~/secret.yml
-  hosts: localhost
-  gather_facts: false
-  become: false
-  tasks:
-    - name: Copy response file
-      copy:
-        src: ../files/response_file
-        dest: ~/
-    - name: Replace with secrets DXMASTERKEYPASS
-      replace:
-        path: ~/response_file
-        regexp: 'REPLACEME1$'
-        replace: '{{ DXMASTERKEYPASS }}'
-    - name: Replace with secrets DXAGENTPASS
-      replace:
-        path: ~/response_file
-        regexp: 'REPLACEME2$'
-        replace: '{{ DXAGENTPASS }}'
-- name: Install CA Directory
-  hosts: directory_servers
-  gather_facts: true
-  tasks:
-    - name: Check dsa user
-      command: "id dsa"
-      register: iddsa
-      ignore_errors: true
-      changed_when: false
-    - name: Installation
-      block:
-        - name: Create directory
-          file:
-            path: /home/ansible/ca_directory
-            state: directory
-        - name: Unarchive .tar.gz file
-          unarchive:
-            src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
-            dest: /home/ansible/ca_directory
-        - name: Upload response file
-          copy:
-            src: ~/response_file
-            dest: /home/ansible/ca_directory/response_file
-        - name: Install CA Directory
-          command: chdir=/home/ansible/ca_directory/dxserver/install/ ./dxsetup.sh -silent -responsefile /home/ansible/ca_directory/response_file
-        - name: Check dsa user
-          command: "id dsa"
-      when: iddsa['rc'] != 0
+    # - name: Copy response file
+    #   copy:
+    #     src: ../files/response_file
+    #     dest: ~/
+    # - name: Replace with secrets DXMASTERKEYPASS
+    #   replace:
+    #     path: ~/response_file
+    #     regexp: 'REPLACEME1$'
+    #     replace: '{{ DXMASTERKEYPASS }}'
+- name: Configure host based authentication (if entries are configured).
+  ansible.builtin.template:
+    src: "response_file"
+    dest: "/home/ansible/response_file"
+    owner: "ansible"
+    group: "adm"
+    mode: 0600
+    # - name: Replace with secrets DXAGENTPASS
+    #   replace:
+    #     path: ~/response_file
+    #     regexp: 'REPLACEME2$'
+    #     replace: '{{ DXAGENTPASS }}'
 
-- name: Remove response_file from home directory
-  hosts: localhost
-  gather_facts: false
-  become: false
-  tasks:
-    - name: Remove response_file
-      file:
-        path: ~/response_file
-        state: absent
+    # - name: Install CA Directory
+    #   hosts: directory_servers
+    #   gather_facts: true
+    #   tasks:
+- name: Check dsa user
+  ansible.builtin.command: 
+    cmd: id 
+    argv: 
+      - dsa
+  register: iddsa
+  ignore_errors: true
+  changed_when: false
+- name: Installation
+  when: iddsa['rc'] != 0
+  block:
+    - name: Create directory
+      ansible.builtin.file:
+        path: /home/ansible/ca_directory
+        state: directory
+        mode: '0644'
+    - name: Unarchive .tar.gz file
+      ansible.builtin.unarchive:
+        src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz
+        dest: /home/ansible/ca_directory
+    - name: Upload response file
+      ansible.builtin.copy:
+        src: ~/response_file
+        dest: /home/ansible/ca_directory/response_file
+        mode: '0644'
+    - name: Install CA Directory
+      ansible.builtin.command: 
+        cmd: ./dxsetup.sh
+        argv: 
+          - -silent 
+          - -responsefile 
+          - /home/ansible/ca_directory/response_file
+        chdir: /home/ansible/ca_directory/dxserver/install/
+      changed_when: true
+    - name: Check dsa user
+      ansible.builtin.command: 
+        cmd: id
+        argv:
+          - dsa
+      changed_when: false
+
+    # - name: Remove response_file from home directory
+    #   hosts: localhost
+    #   gather_facts: false
+    #   become: false
+    #   tasks:
+    #     - name: Remove response_file
+    #       file:
+    #         path: ~/response_file
+    #         state: absent

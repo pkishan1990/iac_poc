@@ -1,33 +1,45 @@
-- name: Create Data Store
-  hosts: directory_servers
-  gather_facts: false
+# - name: Create Data Store
+#   hosts: directory_servers
+#   gather_facts: false
+#   become: true
+#   become_user: dsa
+#   become_flags: "-i"
+  # tasks:
+- name: Check if Data Store exists
   become: true
   become_user: dsa
   become_flags: "-i"
-  tasks:
-    - name: Check if Data Store exists
-      shell: "dxserver status | grep crausers"
-      register: datastore
-      ignore_errors: true
-      changed_when: false
-    - name: Create and start Data Store
-      block:
-        - name: Create Data Store
-          command: "chdir=/disk/apps/directory/dxserver/bin ./dxnewdsa crausers 4000 \"ou=People,o=cra\""
-        - name: Start Data Store
-          command: dxserver start crausers
-      when: datastore['rc'] != 0
-- name: Add Firewall rules to allow ldap port
-  hosts: directory_servers
-  gather_facts: false
-  tasks:
-    - name: Make sure firewall is running
-      service:
-        name: firewalld
-        state: started
-    - name: Add Firewall rules to accept connection
-      firewalld:
-        permanent: true
-        immediate: true
-        port: 4000/tcp
-        state: enabled
+  ansible.builtin.shell: "dxserver status | grep crausers"
+  register: datastore
+  ignore_errors: true
+  changed_when: false
+
+- name: Create and start Data Store
+  become: true
+  become_user: dsa
+  become_flags: "-i"
+  when: datastore['rc'] != 0
+  block:
+    - name: Create Data Store
+      ansible.builtin.command:
+        cmd: ./dxnewdsa
+        chdir: /disk/apps/directory/dxserver/bin
+        argv:
+          - crausers
+          - 4000
+          - ou=People,o=cra
+      changed_when: datastore['rc'] == 0
+    - name: Start Data Store
+      ansible.builtin.command: dxserver start crausers
+      changed_when: datastore['rc'] == 0
+
+- name: Make sure firewall is running
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+- name: Add Firewall rules to accept connection
+  ansible.posix.firewalld:
+    permanent: true
+    immediate: true
+    port: 4000/tcp
+    state: enabled
