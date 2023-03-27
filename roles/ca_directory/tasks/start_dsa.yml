@@ -1,6 +1,22 @@
-- name: Start dsa
-  ansible.builtin.command: dxserver start all
+---
+- name: Check if DSA is already started
+  ansible.builtin.command: 
+    argv:
+      - dxserver
+      - status
   become: true
   become_user: dsa
   become_flags: "-i"
+  register: dsa_status
   changed_when: false
+- name: Start dsa
+  ansible.builtin.command: 
+    argv:
+      - dxserver
+      - start
+      - all
+  become: true
+  become_user: dsa
+  become_flags: "-i"
+  changed_when: true
+  when: "'crausers started' not in dsa_status.stdout"

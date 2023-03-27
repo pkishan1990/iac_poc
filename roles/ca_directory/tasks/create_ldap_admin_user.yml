@@ -1,35 +1,22 @@
-# - name: Copy and replace password placeholder in admin.ldif
-#   hosts: localhost
-#   become: false
-#   vars_files:
-#     - ~/secret.yml
-#   gather_facts: false
-#   tasks:
-# - name: make a copy of admin.ldif file
-#   copy:
-#     src: ../files/admin.ldif
-#     dest: ~/
-# - name: Replace with secrets LDAP_ADMIN_PASSWORD_HASH
-#   replace:
-#     path: ~/admin.ldif
-#     regexp: 'LDAP_ADMIN_PASSWORD_HASH_REPLACE_ME'
-#     replace: '{{ LDAP_ADMIN_PASSWORD_HASH }}'
+---
+- name: Install openldap-clients
+  ansible.builtin.yum:
+    name: openldap-clients
 - name: Copy and replace password placeholder in admin.ldif
   ansible.builtin.template:
     src: "admin.ldif"
     dest: "~/admin.ldif"
-    owner: "ansible"
-    group: "adm"
+    # owner: "ansible"
+    # group: "adm"
     mode: '0600'
-  delegate_to: localhost
-- name: Make sure we have an admin user
-  ansible.builtin.command: "ldapadd -H ldap://{{ item }}:4000 -x -f ~/admin.ldif"
-  with_items: "{{ groups['directory_servers'] }}"
-  register: admin_user_result
+- name: Search for Admin user
+  ansible.builtin.command: ldapsearch -H ldap://{{ansible_hostname}}:4000 -x -b "cn=admin,ou=People,o=cra"
+  register: search_result
   ignore_errors: true
+  changed_when: false
+- name: Make sure we have an admin user
+  ansible.builtin.command: "ldapadd -H ldap://{{ansible_hostname}}:4000 -x -f ~/admin.ldif"
+  # with_items: "{{ groups['directory_servers'] }}"
+  register: admin_user_result
   changed_when: true
-- name: Fail if return code is not 0 or 68 (user already exists)
-  ansible.builtin.fail:
-    msg: Failed to create admin user
-  when: item['rc'] != 0 and item['rc'] != 68
-  loop: "{{ admin_user_result.results }}"
+  when: search_result["rc"] == 32 # if admin user doesn't exist

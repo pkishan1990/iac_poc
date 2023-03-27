@@ -1,10 +1,4 @@
-# - name: Create Data Store
-#   hosts: directory_servers
-#   gather_facts: false
-#   become: true
-#   become_user: dsa
-#   become_flags: "-i"
-  # tasks:
+---
 - name: Check if Data Store exists
   become: true
   become_user: dsa
@@ -33,13 +27,20 @@
       ansible.builtin.command: dxserver start crausers
       changed_when: datastore['rc'] == 0
 
-- name: Make sure firewall is running
-  ansible.builtin.service:
-    name: firewalld
-    state: started
-- name: Add Firewall rules to accept connection
-  ansible.posix.firewalld:
-    permanent: true
-    immediate: true
-    port: 4000/tcp
-    state: enabled
+- name: Check if Service Exists
+  ansible.builtin.stat: 
+    path: /etc/init.d/firewalld
+  register: service_status
+- name: Check firewall
+  when: service_status.stat.exists
+  block:
+  - name: Make sure firewall is running
+    ansible.builtin.service:
+      name: firewalld
+      state: started
+  - name: Add Firewall rules to accept connection
+    ansible.posix.firewalld:
+      permanent: true
+      immediate: true
+      port: 4000/tcp
+      state: enabled

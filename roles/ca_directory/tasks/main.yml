@@ -12,5 +12,3 @@
   ansible.builtin.import_tasks: start_dsa.yml
 - name: Create admin user
   ansible.builtin.import_tasks: create_ldap_admin_user.yml
-- name: Load users
-  ansible.builtin.import_tasks: load_users.yml

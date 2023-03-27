@@ -6,12 +6,40 @@
   vars_files:
     - vault.yml
   tasks:
-    - name: Example assertion
-      ansible.builtin.assert:
-        that: true
     - name: Verify ansible user
       ansible.builtin.command:
         argv:
           - ls
           - /home/ansible
       changed_when: false
+    - name: Verify dsa user
+      ansible.builtin.command:  
+        argv:
+          - id
+          - dsa
+      changed_when: false
+    - name: Verify that CA Directory is running
+      ansible.builtin.command:  
+        argv:
+          - systemctl
+          - status
+          - dxserver
+      register: dxserver_status
+      failed_when: dxserver_status['rc'] != 0
+      changed_when: false
+    - name: Verify that DSA is started
+      ansible.builtin.command: 
+        argv:
+          - dxserver
+          - status
+      become_user: dsa
+      become_flags: "-i"
+      become: true
+      register: dsa_status
+      failed_when: "'crausers started' not in dsa_status.stdout"
+      changed_when: false
+    - name: Verify that Admin user is there
+      ansible.builtin.command: "ldapsearch -H ldap://{{ inventory_hostname }}:4000 -x -b 'cn=admin,ou=People,o=cra'"
+      changed_when: false
+      register: search_result
+      failed_when: search_result["rc"] == 32
