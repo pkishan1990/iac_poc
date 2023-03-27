@@ -17,7 +17,7 @@ provisioner:
   name: ansible
   config_options:
     defaults:
-      vault_password_file: ~/vault_password.txt
+      vault_password_file: /home/iacpocadmin/vault_password.txt
 verifier:
   name: ansible
 lint: |

@@ -6,11 +6,12 @@
   vars_files:
     - vault.yml
   tasks:
-  - name: Example assertion
-    ansible.builtin.assert:
-      that: true
-  - name: Verify ansible user
-    ansible.builtin.command:
-      cmd: ls
-      argv:
-        - /home/ansible
+    - name: Example assertion
+      ansible.builtin.assert:
+        that: true
+    - name: Verify ansible user
+      ansible.builtin.command:
+        argv:
+          - ls
+          - /home/ansible
+      changed_when: false

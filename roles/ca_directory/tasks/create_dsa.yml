@@ -22,9 +22,9 @@
   block:
     - name: Create Data Store
       ansible.builtin.command:
-        cmd: ./dxnewdsa
         chdir: /disk/apps/directory/dxserver/bin
         argv:
+          - ./dxnewdsa
           - crausers
           - 4000
           - ou=People,o=cra
