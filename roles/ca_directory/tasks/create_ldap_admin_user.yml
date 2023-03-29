@@ -2,21 +2,40 @@
 - name: Install openldap-clients
   ansible.builtin.yum:
     name: openldap-clients
-- name: Copy and replace password placeholder in admin.ldif
-  ansible.builtin.template:
-    src: "admin.ldif"
-    dest: "~/admin.ldif"
-    # owner: "ansible"
-    # group: "adm"
-    mode: '0600'
 - name: Search for Admin user
-  ansible.builtin.command: ldapsearch -H ldap://{{ansible_hostname}}:4000 -x -b "cn=admin,ou=People,o=cra"
+  ansible.builtin.command:
+    argv:
+      - ldapsearch
+      - -H 
+      - "ldap://{{ inventory_hostname }}:4000"
+      - -x
+      - -b 
+      - 'cn=admin,ou=People,o=cra'
   register: search_result
   ignore_errors: true
   changed_when: false
-- name: Make sure we have an admin user
-  ansible.builtin.command: "ldapadd -H ldap://{{ansible_hostname}}:4000 -x -f ~/admin.ldif"
-  # with_items: "{{ groups['directory_servers'] }}"
-  register: admin_user_result
-  changed_when: true
+- name: Create Admin User if it doesn't already exist
   when: search_result["rc"] == 32 # if admin user doesn't exist
+  block:
+  - name: Copy and replace password placeholder in admin.ldif
+    ansible.builtin.template:
+      src: "admin.ldif"
+      dest: "/home/ansible/ca_directory/admin.ldif"
+      owner: ansible
+      group: adm
+      mode: '0600'
+  - name: Replace LDAP_ADMIN_PASSWORD_HASH in admin.ldif
+    ansible.builtin.replace:
+      path: /home/ansible/ca_directory/admin.ldif
+      regexp: 'LDAP_ADMIN_PASSWORD_HASH_REPLACE_ME'
+      replace: '{{ LDAP_ADMIN_PASSWORD_HASH }}'
+  - name: Create Admin user
+    ansible.builtin.command: 
+      argv:
+        - ldapadd
+        - -H
+        - "ldap://{{ inventory_hostname }}:4000"
+        - -x
+        - -f 
+        - /home/ansible/ca_directory/admin.ldif
+    changed_when: true

@@ -14,6 +14,8 @@
       ansible.builtin.file:
         path: /home/ansible/ca_directory
         state: directory
+        owner: "ansible"
+        group: "adm"
         mode: '0644'
     - name: Copy response file
       ansible.builtin.template:
@@ -22,6 +24,16 @@
         owner: "ansible"
         group: "adm"
         mode: 0600
+    - name: Replace DXMASTERKEYPASS in response_file
+      ansible.builtin.replace:
+        path: /home/ansible/ca_directory/response_file
+        regexp: 'REPLACEME1'
+        replace: '{{ DXMASTERKEYPASS }}'
+    - name: Replace DXAGENTPASS in response_file
+      ansible.builtin.replace:
+        path: /home/ansible/ca_directory/response_file
+        regexp: 'REPLACEME2'
+        replace: '{{ DXAGENTPASS }}'
     - name: Unarchive .tar.gz file
       ansible.builtin.unarchive:
         src: /tmp/SymantecDirectoryServerLinux64bit_r14.1SP4_IMS_Only.tar.gz

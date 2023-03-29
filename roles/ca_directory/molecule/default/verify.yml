@@ -12,6 +12,14 @@
           - ls
           - /home/ansible
       changed_when: false
+    - name: Verify response file
+      ansible.builtin.lineinfile:
+        path: /home/ansible/ca_directory/response_file
+        line: "DXMASTERKEYPASS=REPLACEME1"
+        state: absent
+      changed_when: false
+      register: result
+      failed_when: result['found'] != 0
     - name: Verify dsa user
       ansible.builtin.command:  
         argv:
@@ -38,8 +46,23 @@
       register: dsa_status
       failed_when: "'crausers started' not in dsa_status.stdout"
       changed_when: false
+    - name: Verify admin.ldif file
+      ansible.builtin.lineinfile:
+        path: /home/ansible/ca_directory/admin.ldif
+        line: "userPassword: LDAP_ADMIN_PASSWORD_HASH_REPLACE_ME"
+        state: absent
+      changed_when: false
+      register: result
+      failed_when: result['found'] != 0
     - name: Verify that Admin user is there
-      ansible.builtin.command: "ldapsearch -H ldap://{{ inventory_hostname }}:4000 -x -b 'cn=admin,ou=People,o=cra'"
+      ansible.builtin.command: 
+        argv: 
+          - ldapsearch
+          - -H
+          - "ldap://{{ inventory_hostname }}:4000"
+          - -x
+          - -b 
+          - 'cn=admin,ou=People,o=cra'
       changed_when: false
       register: search_result
       failed_when: search_result["rc"] == 32

@@ -27,7 +27,7 @@
       ansible.builtin.command: dxserver start crausers
       changed_when: datastore['rc'] == 0
 
-- name: Check if Service Exists
+- name: Check if firewalld service exists
   ansible.builtin.stat: 
     path: /etc/init.d/firewalld
   register: service_status
