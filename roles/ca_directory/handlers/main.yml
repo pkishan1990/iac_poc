@@ -1,2 +1,12 @@
 ---
 # handlers file for ca_directory
+- name: Reload configurations
+  ansible.builtin.command:
+    argv:
+      - dxserver
+      - init
+      - all
+  become: true
+  become_user: dsa
+  become_flags: '-i'
+  changed_when: true

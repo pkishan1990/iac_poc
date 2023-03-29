@@ -6,6 +6,8 @@
   ansible.builtin.import_tasks: install_ca_directory.yml
 - name: Start CA Directory
   ansible.builtin.import_tasks: start_ca_directory.yml
+- name: Deploy custom schemas
+  ansible.builtin.import_tasks: deploy_custom_schemas.yml
 - name: Create DSA data store
   ansible.builtin.import_tasks: create_dsa.yml
 - name: Start DSA

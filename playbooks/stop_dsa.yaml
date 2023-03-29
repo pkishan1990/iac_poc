@@ -1,8 +1,0 @@
-- name: Stop dsa
-  hosts: directory_servers
-  become_user: dsa
-  become_flags: "-i"
-  gather_facts: false
-  tasks:
-    - name: Stop dsa
-      command: dxserver stop all

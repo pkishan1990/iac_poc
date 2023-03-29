@@ -1,0 +1,6 @@
+dn: cn=bob,ou=People,o=cra
+changetype: add
+uid: bob
+email: bob@cra-arc.gc.ca
+description: bob user
+objectClass: account

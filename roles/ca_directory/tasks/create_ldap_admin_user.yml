@@ -23,7 +23,7 @@
       dest: "/home/ansible/ca_directory/admin.ldif"
       owner: ansible
       group: adm
-      mode: '0600'
+      mode: '0700'
   - name: Replace LDAP_ADMIN_PASSWORD_HASH in admin.ldif
     ansible.builtin.replace:
       path: /home/ansible/ca_directory/admin.ldif

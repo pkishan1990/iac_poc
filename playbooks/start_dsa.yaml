@@ -1,8 +1,0 @@
-- name: Start dsa
-  hosts: directory_servers
-  become_user: dsa
-  become_flags: "-i"
-  gather_facts: false
-  tasks:
-    - name: Start dsa
-      command: dxserver start all

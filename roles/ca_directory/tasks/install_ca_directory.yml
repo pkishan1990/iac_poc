@@ -16,14 +16,14 @@
         state: directory
         owner: "ansible"
         group: "adm"
-        mode: '0644'
+        mode: '0700'
     - name: Copy response file
       ansible.builtin.template:
         src: "response_file"
         dest: "/home/ansible/ca_directory/response_file"
         owner: "ansible"
         group: "adm"
-        mode: 0600
+        mode: 0700
     - name: Replace DXMASTERKEYPASS in response_file
       ansible.builtin.replace:
         path: /home/ansible/ca_directory/response_file

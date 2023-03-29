@@ -1,8 +1,0 @@
-- name: Stop CA Directory
-  hosts: directory_servers
-  gather_facts: no
-  tasks:
-    - name: Stop dxserver service
-      service:
-        name: dxserver
-        state: stopped

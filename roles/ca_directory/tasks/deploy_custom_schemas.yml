@@ -1,0 +1,9 @@
+---
+- name: Copy newstaff schema
+  ansible.builtin.template:
+    src: files/newstaff.dxc
+    dest: /disk/apps/directory/dxserver/config/schema/newstaff.dxc
+    owner: dsa
+    group: dsa
+    mode: 0440
+  notify: Reload configurations

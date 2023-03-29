@@ -1,9 +1,0 @@
-- name: Load an ldif file
-  vars_files: 
-    - ~/secret.yml
-  hosts: localhost
-  gather_facts: false
-  become: false
-  tasks:
-    - name: Load users from an ldif file
-      command: "ldapadd -H ldap://iacpocvm:4000 -D \"cn=admin,ou=People,o=cra\" -w {{ LDAP_ADMIN_PASSWORD }} -f ../files/data.ldif"
