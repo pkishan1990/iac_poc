@@ -28,19 +28,19 @@
       changed_when: datastore['rc'] == 0
 
 - name: Check if firewalld service exists
-  ansible.builtin.stat: 
+  ansible.builtin.stat:
     path: /etc/init.d/firewalld
   register: service_status
 - name: Check firewall
   when: service_status.stat.exists
   block:
-  - name: Make sure firewall is running
-    ansible.builtin.service:
-      name: firewalld
-      state: started
-  - name: Add Firewall rules to accept connection
-    ansible.posix.firewalld:
-      permanent: true
-      immediate: true
-      port: 4000/tcp
-      state: enabled
+    - name: Make sure firewall is running
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+    - name: Add Firewall rules to accept connection
+      ansible.posix.firewalld:
+        permanent: true
+        immediate: true
+        port: 4000/tcp
+        state: enabled

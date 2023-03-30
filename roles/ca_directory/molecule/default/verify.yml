@@ -5,7 +5,7 @@
   gather_facts: false
   vars_files:
     - vault.yml
- 
+
   tasks:
     - name: Verify ansible user
       ansible.builtin.command:
@@ -22,13 +22,13 @@
       register: result
       failed_when: result['found'] != 0
     - name: Verify dsa user
-      ansible.builtin.command:  
+      ansible.builtin.command:
         argv:
           - id
           - dsa
       changed_when: false
     - name: Verify that CA Directory is running
-      ansible.builtin.command:  
+      ansible.builtin.command:
         argv:
           - systemctl
           - status
@@ -44,7 +44,7 @@
           - -H
           - "ldap://{{ inventory_hostname }}:4000"
           - -x
-          - -b 
+          - -b
           - 'cn=bob,ou=People,o=cra'
           - email
       changed_when: false
@@ -52,44 +52,44 @@
       register: search_result
     - name: Add test users
       when: search_result["rc"] != 0
-      block: 
-      - name: Copy test users ldif
-        ansible.builtin.template:
-          src: "testusers.ldif"
-          dest: "/home/ansible/ca_directory/testusers.ldif"
-          owner: ansible
-          group: adm
-          mode: '0700'
-      - name: Add some test entries
-        ansible.builtin.command: 
-          argv:
-            - ldapadd
-            - -H
-            - "ldap://{{ inventory_hostname }}:4000"
-            - -D
-            - "cn=admin,ou=People,o=cra"
-            - -w
-            - '{{ LDAP_ADMIN_PASSWORD }}'
-            - -f
-            - /home/ansible/ca_directory/testusers.ldif
-        register: user_result
-        changed_when: true
-      - name: Lookup the new user
-        ansible.builtin.command:
-          argv:
-            - ldapsearch
-            - -H
-            - "ldap://{{ inventory_hostname }}:4000"
-            - -x
-            - -b 
-            - 'cn=bob,ou=People,o=cra'
-            - email
-        changed_when: false
-        register: search_result
-        failed_when: "'email: bob@cra-arc.gc.ca' not in search_result.stdout"
+      block:
+        - name: Copy test users ldif
+          ansible.builtin.template:
+            src: "testusers.ldif"
+            dest: "/home/ansible/ca_directory/testusers.ldif"
+            owner: ansible
+            group: adm
+            mode: '0700'
+        - name: Add some test entries
+          ansible.builtin.command:
+            argv:
+              - ldapadd
+              - -H
+              - "ldap://{{ inventory_hostname }}:4000"
+              - -D
+              - "cn=admin,ou=People,o=cra"
+              - -w
+              - '{{ LDAP_ADMIN_PASSWORD }}'
+              - -f
+              - /home/ansible/ca_directory/testusers.ldif
+          register: user_result
+          changed_when: true
+        - name: Lookup the new user
+          ansible.builtin.command:
+            argv:
+              - ldapsearch
+              - -H
+              - "ldap://{{ inventory_hostname }}:4000"
+              - -x
+              - -b
+              - 'cn=bob,ou=People,o=cra'
+              - email
+          changed_when: false
+          register: search_result
+          failed_when: "'email: bob@cra-arc.gc.ca' not in search_result.stdout"
 
     - name: Verify that DSA is started
-      ansible.builtin.command: 
+      ansible.builtin.command:
         argv:
           - dxserver
           - status
@@ -108,13 +108,13 @@
       register: result
       failed_when: result['found'] != 0
     - name: Verify that Admin user is there
-      ansible.builtin.command: 
-        argv: 
+      ansible.builtin.command:
+        argv:
           - ldapsearch
           - -H
           - "ldap://{{ inventory_hostname }}:4000"
           - -x
-          - -b 
+          - -b
           - 'cn=admin,ou=People,o=cra'
       changed_when: false
       register: search_result

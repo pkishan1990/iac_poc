@@ -6,36 +6,36 @@
   ansible.builtin.command:
     argv:
       - ldapsearch
-      - -H 
+      - -H
       - "ldap://{{ inventory_hostname }}:4000"
       - -x
-      - -b 
+      - -b
       - 'cn=admin,ou=People,o=cra'
   register: search_result
   ignore_errors: true
   changed_when: false
 - name: Create Admin User if it doesn't already exist
-  when: search_result["rc"] == 32 # if admin user doesn't exist
+  when: search_result["rc"] == 32   # if admin user doesn't exist
   block:
-  - name: Copy and replace password placeholder in admin.ldif
-    ansible.builtin.template:
-      src: "admin.ldif"
-      dest: "/home/ansible/ca_directory/admin.ldif"
-      owner: ansible
-      group: adm
-      mode: '0700'
-  - name: Replace LDAP_ADMIN_PASSWORD_HASH in admin.ldif
-    ansible.builtin.replace:
-      path: /home/ansible/ca_directory/admin.ldif
-      regexp: 'LDAP_ADMIN_PASSWORD_HASH_REPLACE_ME'
-      replace: '{{ LDAP_ADMIN_PASSWORD_HASH }}'
-  - name: Create Admin user
-    ansible.builtin.command: 
-      argv:
-        - ldapadd
-        - -H
-        - "ldap://{{ inventory_hostname }}:4000"
-        - -x
-        - -f 
-        - /home/ansible/ca_directory/admin.ldif
-    changed_when: true
+    - name: Copy and replace password placeholder in admin.ldif
+      ansible.builtin.template:
+        src: "admin.ldif"
+        dest: "/home/ansible/ca_directory/admin.ldif"
+        owner: ansible
+        group: adm
+        mode: '0700'
+    - name: Replace LDAP_ADMIN_PASSWORD_HASH in admin.ldif
+      ansible.builtin.replace:
+        path: /home/ansible/ca_directory/admin.ldif
+        regexp: 'LDAP_ADMIN_PASSWORD_HASH_REPLACE_ME'
+        replace: '{{ LDAP_ADMIN_PASSWORD_HASH }}'
+    - name: Create Admin user
+      ansible.builtin.command:
+        argv:
+          - ldapadd
+          - -H
+          - "ldap://{{ inventory_hostname }}:4000"
+          - -x
+          - -f
+          - /home/ansible/ca_directory/admin.ldif
+      changed_when: true

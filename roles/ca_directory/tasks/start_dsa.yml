@@ -1,6 +1,6 @@
 ---
 - name: Check if DSA is already started
-  ansible.builtin.command: 
+  ansible.builtin.command:
     argv:
       - dxserver
       - status
@@ -10,7 +10,7 @@
   register: dsa_status
   changed_when: false
 - name: Start dsa
-  ansible.builtin.command: 
+  ansible.builtin.command:
     argv:
       - dxserver
       - start

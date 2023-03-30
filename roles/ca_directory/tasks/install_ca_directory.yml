@@ -1,14 +1,14 @@
 ---
 - name: Check dsa user
-  ansible.builtin.command:  
+  ansible.builtin.command:
     argv:
-      - id 
+      - id
       - dsa
   register: iddsa
   ignore_errors: true
   changed_when: false
 - name: Installation
-  when: iddsa['rc'] != 0 # dsa user doesn't exist
+  when: iddsa['rc'] != 0   # dsa user doesn't exist
   block:
     - name: Create directory
       ansible.builtin.file:
@@ -40,10 +40,10 @@
         dest: /home/ansible/ca_directory
     - name: Install CA Directory
       ansible.builtin.command:
-        argv: 
+        argv:
           - ./dxsetup.sh
-          - -silent 
-          - -responsefile 
+          - -silent
+          - -responsefile
           - /home/ansible/ca_directory/response_file
         chdir: /home/ansible/ca_directory/dxserver/install/
       changed_when: true

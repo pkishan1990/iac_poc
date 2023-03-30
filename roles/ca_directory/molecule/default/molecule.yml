@@ -22,5 +22,5 @@ verifier:
   name: ansible
 lint: |
   set -e
-  find . -name "*.yml" ! -name vault.yml -exec yamllint {} \;
-  find . -name "*.yml" ! -name vault.yml -exec ansible-lint {} \;
+  yamllint .
+  ansible-lint .

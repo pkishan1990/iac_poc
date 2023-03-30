@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Kishan and Lei
   description: Installs and configures CA Directory
@@ -9,6 +10,6 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-      - "7"
+        - "7"
   galaxy_tags: []
-dependencies: [] 
+dependencies: []
