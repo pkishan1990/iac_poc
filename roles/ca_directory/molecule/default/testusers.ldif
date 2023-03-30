@@ -1,6 +1,6 @@
 dn: cn=bob,ou=People,o=cra
 changetype: add
-uid: bob
+sn: user
 email: bob@cra-arc.gc.ca
 description: bob user
-objectClass: account
+objectClass: person

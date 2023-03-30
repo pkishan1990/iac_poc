@@ -1,9 +1,25 @@
 ---
-- name: Copy newstaff schema
+- name: Copy custom_x500.dxc
   ansible.builtin.template:
-    src: files/newstaff.dxc
-    dest: /disk/apps/directory/dxserver/config/schema/newstaff.dxc
+    src: files/x500.dxc
+    dest: /disk/apps/directory/dxserver/config/schema/x500.dxc
     owner: dsa
     group: dsa
     mode: 0440
   notify: Reload configurations
+# - name: Copy crausers.dxg
+#   ansible.builtin.template:
+#     src: files/crausers.dxg
+#     dest: /disk/apps/directory/dxserver/config/schema/crausers.dxg
+#     owner: dsa
+#     group: dsa
+#     mode: 0440
+#   notify: Reload configurations
+# - name: Copy crausers.dxi
+#   ansible.builtin.template:
+#     src: files/crausers.dxi
+#     dest: /disk/apps/directory/dxserver/config/servers/crausers.dxi
+#     owner: dsa
+#     group: dsa
+#     mode: 0440
+#   notify: Reload configurations
