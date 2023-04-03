@@ -1,0 +1,11 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check if CA Directory is not present
+      ansible.builtin.stat:
+        path: /disk/apps/directory/dxserver/
+      register: installation_media
+      failed_when: installation_media.stat.exists
+      changed_when: false

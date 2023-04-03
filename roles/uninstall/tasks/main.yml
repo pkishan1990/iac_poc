@@ -1,0 +1,4 @@
+---
+# tasks file for uninstall
+- name: Uninstall CA Directory
+  ansible.builtin.import_tasks: uninstall_ca_directory.yml

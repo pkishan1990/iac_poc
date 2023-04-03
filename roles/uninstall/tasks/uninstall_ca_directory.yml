@@ -1,0 +1,31 @@
+---
+- name: Check dsa user
+  ansible.builtin.command:
+    argv:
+      - id
+      - dsa
+  register: iddsa
+  ignore_errors: true
+  changed_when: false
+- name: Uninstallation
+  when: iddsa['rc'] == 0   # dsa user exist
+  block:
+    - name: Stop DSA
+      ansible.builtin.command:
+        argv:
+          - dxserver
+          - stop
+          - all
+      become: true
+      become_user: dsa
+      become_flags: "-i"
+      changed_when: true
+    - name: Uninstall CA Directory
+      ansible.builtin.command:
+        argv:
+          - ./dxuninst.sh
+          - -silent
+        chdir: /home/ansible/ca_directory/dxserver/install
+      become: true
+      become_flags: "-i"
+      changed_when: true
