@@ -1,7 +1,19 @@
 ---
+- name: Debug OS ansible_distribution
+  ansible.builtin.debug:
+    msg: "OS: {{ ansible_distribution }}"
+- name: Include OS-specific variables.
+  ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
+
+- name: Set the create_ansible_user variable.
+  ansible.builtin.set_fact:
+    create_ansible_user: "{{ __create_ansible_user }}"
+  when: create_ansible_user is not defined
+
 # tasks file for ca_directory
 - name: Create ansible user
   ansible.builtin.import_tasks: create_ansible_user.yml
+  when: create_ansible_user is true
 - name: Install CA Directory
   ansible.builtin.import_tasks: install_ca_directory.yml
 - name: Start CA Directory
