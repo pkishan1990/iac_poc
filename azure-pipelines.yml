@@ -1,0 +1,11 @@
+# pipeline
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: ansible-playbook roles/install-playbook.yml
+  displayName: 'Run Ansible Install Playbook'
