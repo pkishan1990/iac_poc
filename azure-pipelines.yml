@@ -9,3 +9,6 @@ pool:
 steps:
 - script: ansible-playbook roles/install-playbook.yml
   displayName: 'Run Ansible Install Playbook'
+
+- script: pwd
+- script: id user
