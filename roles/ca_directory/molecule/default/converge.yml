@@ -3,7 +3,7 @@
   hosts: all
   gather_facts: true
   vars_files:
-    - /home/iacpocadmin/vault.yml
+    - vault.yml
   tasks:
     - name: "Include iacpoc.ca_directory"
       ansible.builtin.include_role:
