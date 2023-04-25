@@ -7,5 +7,8 @@ pool:
   name: myUbuntuAgentsPool
 
 steps:
-- script: ansible-playbook roles/install-playbook.yml
-  displayName: 'Run Ansible Install Playbook'
+- script: source $HOME/python/molecule/bin/activate
+  displayName: 'Source molecule'
+
+- script: molecule test
+  displayName: 'Run Ansible Test'
