@@ -3,6 +3,6 @@
   hosts: directory_servers
   gather_facts: true
   vars_files:
-    - /home/iacpocadmin/vault.yml
+    - ~/vault.yml
   roles:
     - ca_directory
