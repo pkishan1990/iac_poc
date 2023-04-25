@@ -10,5 +10,5 @@ steps:
 - script: source $HOME/python/molecule/bin/activate
   displayName: 'Source molecule'
 
-- script: molecule test
+- script: cd $HOME/iac_poc/iac_poc/roles/ca_directory && molecule test
   displayName: 'Run Ansible Test'
