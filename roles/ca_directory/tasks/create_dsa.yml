@@ -23,9 +23,6 @@
           - 4000
           - ou=People,o=cra
       changed_when: datastore['rc'] == 0
-    - name: Start Data Store
-      ansible.builtin.command: dxserver start crausers
-      changed_when: datastore['rc'] == 0
 
 - name: Check if firewalld service exists
   ansible.builtin.stat:

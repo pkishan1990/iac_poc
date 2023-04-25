@@ -9,7 +9,7 @@
   become_flags: "-i"
   register: dsa_status
   changed_when: false
-- name: Start dsa
+- name: Start data store
   ansible.builtin.command:
     argv:
       - dxserver
