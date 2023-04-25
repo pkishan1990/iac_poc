@@ -11,4 +11,7 @@ steps:
   displayName: 'Source molecule'
 
 - script: cd $HOME/iac_poc/iac_poc/roles/ca_directory && molecule test
-  displayName: 'Run Ansible Test'
+  displayName: 'Run Ansible Install Test'
+
+- script: cd $HOME/iac_poc/iac_poc/roles/uninstall && molecule test
+  displayName: 'Run Ansible Uninstall Test'
