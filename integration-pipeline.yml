@@ -7,8 +7,8 @@ pool:
   name: myUbuntuAgentsPool
 
 steps:
-- script: source $HOME/python/molecule/bin/activate
-  displayName: 'Activate molecule'
+#- script: source $HOME/python/molecule/bin/activate
+#  displayName: 'Activate molecule'
 
 - script: cd $HOME/iac_poc/iac_poc/roles/ca_directory && molecule test
   displayName: 'Install CA Directory'
