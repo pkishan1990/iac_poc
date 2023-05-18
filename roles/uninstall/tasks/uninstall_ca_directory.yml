@@ -8,7 +8,7 @@
   ignore_errors: true
   changed_when: false
 - name: Uninstallation
-  when: iddsa['rc'] == 0   # dsa user exist
+  when: iddsa['rc'] == 0   # dsa user exists
   block:
     - name: Stop DSA
       ansible.builtin.command:
