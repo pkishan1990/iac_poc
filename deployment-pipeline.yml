@@ -1,0 +1,11 @@
+# pipeline
+
+trigger:
+- main
+
+pool:
+  name: myUbuntuAgentsPool
+
+steps:
+- script: cd $HOME/iac_poc/iac_poc/roles && ansible-playbook install-playbook.yml
+  displayName: 'Run Ansible Install'
